@@ -3,7 +3,7 @@
 /**
  *
  * LICENSE: GNU Affero General Public License, version 3 (AGPLv3)
- * Copyright 2001 - 2017 Ampache.org
+ * Copyright 2001 - 2019 Ampache.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -47,11 +47,11 @@ class Clip extends Video
     } // Constructor
 
     /**
-     * gc
+     * garbage_collection
      *
      * This cleans out unused clips
      */
-    public static function gc()
+    public static function garbage_collection()
     {
         $sql = "DELETE FROM `clip` USING `clip` LEFT JOIN `video` ON `video`.`id` = `clip`.`id` " .
             "WHERE `video`.`id` IS NULL";
@@ -82,14 +82,14 @@ class Clip extends Video
      */
     public static function insert(array $data, $gtypes = array(), $options = array())
     {
-        debug_event('clips', 'insert ' . print_r($data,true) , 5);
+        debug_event('clips.class', 'insert ' . print_r($data,true) , 5);
         $artist_id = self::_get_artist_id($data);
         $song_id   = Song::find($data);
         if (empty($song_id)) {
             $song_id = null;
         }
         if ($artist_id || $song_id) {
-            debug_event('clips', 'insert ' . print_r(['artist_id' => $artist_id,'song_id' => $song_id],true) , 5);
+            debug_event('clips.class', 'insert ' . print_r(['artist_id' => $artist_id,'song_id' => $song_id],true) , 5);
             $sql = "INSERT INTO `clip` (`id`,`artist`,`song`) " .
           "VALUES (?, ?, ?)";
             Dba::write($sql, array($data['id'], $artist_id, $song_id));
@@ -104,10 +104,10 @@ class Clip extends Video
      */
     public function update(array $data)
     {
-        debug_event('clips', 'update ' . print_r($data,true) , 5);
+        debug_event('clips.class', 'update ' . print_r($data,true) , 5);
         $artist_id = self::_get_artist_id($data);
         $song_id   = Song::find($data);
-        debug_event('clips', 'update ' . print_r(['artist_id' => $artist_id,'song_id' => $song_id],true) , 5);
+        debug_event('clips.class', 'update ' . print_r(['artist_id' => $artist_id,'song_id' => $song_id],true) , 5);
 
         $sql = "UPDATE `clip` SET `artist` = ?, `song` = ? WHERE `id` = ?";
         Dba::write($sql, array($artist_id, $song_id, $this->id));
