@@ -797,6 +797,34 @@ class XML_Data
     }
     // users
 
+    /**
+     * shouts
+     *
+     * This handles creating an xml document for a shout list
+     *
+     * @param    int[]    $shouts    Shout identifier list
+     * @return    string    return xml
+     */
+    public static function shouts($shouts)
+    {
+        $string = "<shouts>\n";
+        foreach ($shouts as $shout_id) {
+            $shout = new Shoutbox($shout_id);
+            $shout->format();
+            $user = new User($shout->user);
+            $string .= "\t<shout id=\"" . $shout_id . "\">\n" .
+                    "\t\t<date>" . $shout->date . "</date>\n" .
+                    "\t\t<text><![CDATA[" . $shout->text . "]]></text>\n";
+            if ($user->id) {
+                $string .= "\t\t<username><![CDATA[" . $user->username . "]]></username>";
+            }
+            $string .= "\t</shout>n";
+        }
+        $string .= "</shouts>\n";
+
+        return self::output_xml($string);
+    } // shouts
+
     public static function output_xml($string, $full_xml = true)
     {
         $xml = "";
