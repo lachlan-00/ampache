@@ -690,6 +690,28 @@ class XML_Data
     {
         $string = '<total_count>' . count($videos) . "</total_count>\n";
 
+        if (count($videos) > self::$limit or self::$offset > 0) {
+            if (null !== self::$limit) {
+                $videos = array_slice($videos, self::$offset, self::$limit);
+            } else {
+                $videos = array_slice($videos, self::$offset);
+            }
+        }
+        foreach ($videos as $video_id) {
+            $video = new Video($video_id);
+            $video->format();
+            $string .= "<video id=\"" . $video->id . "\">\n" .
+                    // Title is an alias for name
+                    "\t<title><![CDATA[" . $video->title . "]]></title>\n" .
+                    "\t<name><![CDATA[" . $video->title . "]]></name>\n" .
+                    "\t<mime><![CDATA[" . $video->mime . "]]></mime>\n" .
+                    "\t<resolution>" . $video->f_resolution . "</resolution>\n" .
+                    "\t<size>" . $video->size . "</size>\n" .
+                    self::tags_string($video->tags) .
+                    "\t<url><![CDATA[" . Video::play_url($video->id, '', 'api') . "]]></url>\n" .
+                    "</video>\n";
+        } // end foreach
+
         return self::output_xml($string);
     }
     // videos
