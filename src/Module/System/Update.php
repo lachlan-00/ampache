@@ -1208,8 +1208,11 @@ class Update
         $retval = true;
         $sql    = "DELETE `dupe` FROM `song` AS `dupe`, `song` AS `orig` WHERE `dupe`.`id` > `orig`.`id` AND `dupe`.`file` <=> `orig`.`file`;";
         $retval &= Dba::write($sql);
-        $sql    = "ALTER TABLE `song` MODIFY COLUMN `file` varchar(4096) unique;";
-        $retval &= Dba::write($sql);
+        $charset   = (AmpConfig::get('database_charset', 'utf8mb4'));
+        if ($charset !== 'utf8mb4') {
+            $sql    = "ALTER TABLE `song` MODIFY COLUMN `file` varchar(4096) unique;";
+            $retval &= Dba::write($sql);
+        }
 
         return $retval;
     }
