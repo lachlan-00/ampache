@@ -627,9 +627,9 @@ class Subsonic_Api
      */
     private static function _albumList($input, $type)
     {
-        $size          = $input['size'] ?: 10;
-        $offset        = $input['offset'] ?: 0;
-        $musicFolderId = $input['musicFolderId'] ?: 0;
+        $size          = $input['size'] ? (int)$input['size'] : 10;
+        $offset        = $input['offset'] ? (int)$input['offset'] : 0;
+        $musicFolderId = $input['musicFolderId'] ? (int)$input['musicFolderId'] : 0;
 
         // Get albums from all catalogs by default Catalog filter is not supported for all request types for now.
         $catalogs = null;
@@ -2269,7 +2269,7 @@ class Subsonic_Api
                 Subsonic_Xml_Data::addPodcasts($response, $podcasts, $includeEpisodes);
             }
         } else {
-            $response = Subsonic_Xml_Data::createError(Subsonic_Xml_Data::SSERROR_UNAUTHORIZED, '', 'getpodcasts');
+            $response = Subsonic_Xml_Data::createError(Subsonic_Xml_Data::SSERROR_DATA_NOTFOUND, '', 'getpodcasts');
         }
         self::apiOutput($input, $response);
     }
@@ -2289,8 +2289,7 @@ class Subsonic_Api
             $episodes = Catalog::get_newest_podcasts($count);
             Subsonic_Xml_Data::addNewestPodcastEpisodes($response, $episodes);
         } else {
-            $response = Subsonic_Xml_Data::createError(Subsonic_Xml_Data::SSERROR_UNAUTHORIZED, '',
-                'getnewestpodcasts');
+            $response = Subsonic_Xml_Data::createError(Subsonic_Xml_Data::SSERROR_DATA_NOTFOUND, '', 'getnewestpodcasts');
         }
         self::apiOutput($input, $response);
     }
